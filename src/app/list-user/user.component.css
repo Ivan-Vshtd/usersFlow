@@ -1,0 +1,22 @@
+table {
+  width: 40%;
+  margin-left: 3%;
+}
+.addBtn {
+  background-color: dimgray;
+  margin-left: 3%;
+  margin-top: 1%;
+}
+
+.example-card {
+  max-width: 400px;
+  margin-left: 3%;
+  margin-top: 5%;
+}
+#events{
+  margin-top: 30px;
+}
+
+mat-paginator{
+  margin-right: 56%;
+}

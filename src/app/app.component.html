@@ -1,0 +1,15 @@
+<mat-toolbar class="tool-bar">
+  <mat-toolbar-row>
+    <span><img src="../../assets/logopng.png" style="height: 55px; width: auto"></span>
+    <span class="example-fill-remaining-space"></span>
+    <span class="example-spacer"></span>
+    <div *ngIf="crntUser()">
+    <button mat-raised-button class="tbBtn" (click)="users()">Users</button>
+    <button mat-raised-button class="tbBtn" (click)="logOut()">Log out</button>
+    <span id="username" (click)="editUser()">user: {{crntUser()}}</span>
+    <span id="eventlog" *ngIf="crntUser()">{{action}}</span>
+    </div>
+  </mat-toolbar-row>
+</mat-toolbar>
+<router-outlet></router-outlet>
+

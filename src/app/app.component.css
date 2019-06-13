@@ -1,0 +1,24 @@
+
+.tool-bar {
+  background-color: dimgray;
+}
+.tbBtn {
+  background-color: dimgray;
+  margin-left: 5%;
+}
+#username{
+  font-style: italic;
+  margin-left: 5%;
+  cursor: pointer
+}
+
+#username:hover{
+  color: rebeccapurple;
+}
+
+#eventlog{
+  font-style: italic;
+  margin-left: 10%;
+  color: cadetblue;
+  font-size: 12px
+}

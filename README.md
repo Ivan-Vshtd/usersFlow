@@ -1,2 +1,2 @@
 # usersFlow
-simple user managing app (REST + websocket + Angular7)
+simple user management app (REST + websocket + Angular7)
