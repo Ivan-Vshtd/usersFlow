@@ -1,6 +1,5 @@
 package chat.chat.service.impl;
 
-import chat.chat.dto.UserDto;
 import chat.chat.dto.UserInfoDto;
 import chat.chat.dto.wsdto.EventType;
 import chat.chat.dto.wsdto.ObjectType;
@@ -20,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.function.BiConsumer;
@@ -27,6 +27,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
+@Transactional(readOnly = true)
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
@@ -44,6 +45,7 @@ public class UserServiceImpl implements UserService {
         this.wsSender = wsSender.getSender(ObjectType.USER);
     }
 
+    @Transactional
     @Override
     public ResponseEntity register(User user) {
 
@@ -68,7 +70,7 @@ public class UserServiceImpl implements UserService {
     public ResponseEntity findAll(PageRequest request) {
 
         Page<User> result = userRepository.findAll(request);
-        log.info("getAll - {} users found", result.getTotalElements());
+        log.info("getAll - {} users found for requested page", result.getContent().size());
 
         List<UserInfoDto> showUsers = showUsers(result.getContent());
 
@@ -116,6 +118,7 @@ public class UserServiceImpl implements UserService {
         return new ResponseEntity<>(UserInfoDto.fromUser(resultUser), HttpStatus.OK);
     }
 
+    @Transactional
     @Override
     public ResponseEntity delete(Long id) {
 
@@ -130,12 +133,13 @@ public class UserServiceImpl implements UserService {
         return ResponseEntity.ok().build();
     }
 
+    @Transactional
     @Override
     public ResponseEntity updateUser(User user, Long id) {
 
         User userToUpdate = userRepository.findById(id).orElse(null);
         user.setUpdated(new Date());
-        user.setCreated(userToUpdate.getCreated());
+        user.setCreated(Objects.requireNonNull(userToUpdate).getCreated());
         user.setId(id);
         user.setRoles(userToUpdate.getRoles());
         checkPassword(user, userToUpdate);
@@ -149,13 +153,13 @@ public class UserServiceImpl implements UserService {
 
     private ResponseEntity prepareResponse(User user) {
         String token = jwtTokenProvider.createToken(user.getUsername(), user.getRoles());
-        Map<Object, Object> response = new HashMap<>();
+        Map<Object, Object> response = new LinkedHashMap<>();
 
-        List<String> roles =
+        Set<String> roles =
                 user.getRoles()
                         .stream()
                         .map(Role::getName)
-                        .collect(Collectors.toList());
+                        .collect(Collectors.toSet());
 
         response.put("username", user.getUsername());
         response.put("id", user.getId());

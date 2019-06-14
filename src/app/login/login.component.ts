@@ -1,6 +1,6 @@
 import {Component, Injectable, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {ActivatedRoute, ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {AuthenticationService} from "../service/authentication.service";
 import {first} from "rxjs/operators";
 
@@ -10,7 +10,7 @@ import {first} from "rxjs/operators";
   styleUrls: ['./login.component.css']
 })
 @Injectable({ providedIn: 'root' })
-export class LoginComponent implements CanActivate, OnInit {
+export class LoginComponent implements OnInit {
 
   loginForm: FormGroup;
   submitted = false;
@@ -24,17 +24,6 @@ export class LoginComponent implements CanActivate, OnInit {
       private router: Router,
       private authenticationService: AuthenticationService
   ) { }
-
-  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-    const currentUser = this.authenticationService.currentUserValue;
-    if (currentUser) {
-      return true;
-    }
-
-    // not logged in so redirect to login page with the return url
-    this.router.navigate(['/login'], { queryParams: { returnUrl: state.url } });
-    return false;
-  }
 
   ngOnInit() {
     this.loginForm = this.formBuilder.group({
